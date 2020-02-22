@@ -11,6 +11,8 @@ import UIKit
 class ListView: UIView {
     var movieArray = [UpcomingResult]()
     var nowPlayingMovieArray = [NowPlayingResult]()
+    var rowTapped : ((String) -> Void)? = nil
+    
     fileprivate let cellId = "cellId"
     fileprivate let headerId = "headerId"
 
@@ -27,8 +29,14 @@ class ListView: UIView {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.allowsMultipleSelection = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.allowsSelection = false
         return tableView
+    }()
+    
+    lazy var searchView : SearchResultView = {
+        let view = SearchResultView()
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     override init(frame: CGRect = .zero) {
@@ -41,26 +49,34 @@ class ListView: UIView {
     
 }
 
-extension ListView : SetupView, UISearchBarDelegate {
+extension ListView : SetupView, UISearchBarDelegate, UISearchDisplayDelegate {
     func buildViewHierarchy() {
-        self.addSubviews(searchBar, tableView)
+        self.addSubviews(searchBar, tableView, searchView)
     }
     
     func setupConstraints() {
         let safeArea = self.safeAreaLayoutGuide
-
         searchBar.anchor(top: safeArea.topAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0))
         
         tableView.anchor(top: searchBar.bottomAnchor, leading: safeArea.leadingAnchor, bottom: safeArea.bottomAnchor, trailing: safeArea.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0))
+        
+        searchView.anchor(top: searchBar.bottomAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 300))
     }
     
     func setupAdditionalConfiguration() {
         tableView.delegate = self
         tableView.dataSource = self
+        searchBar.delegate = self
         tableView.register(ListMovieCell.self, forCellReuseIdentifier: cellId)
     }
     
-    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if (searchBar.text?.components(separatedBy: " ").count)! > 2 {
+            self.searchView.isHidden = false
+        } else {
+            self.searchView.isHidden = true
+        }
+    }
 }
 
 extension ListView : UITableViewDelegate, UITableViewDataSource {
@@ -70,10 +86,9 @@ extension ListView : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? ListMovieCell ?? ListMovieCell(style: .default, reuseIdentifier: cellId)
-        cell.accessoryType = .disclosureIndicator
         
+        cell.accessoryType = .disclosureIndicator
         cell.configure(movieItem: movieArray[indexPath.row])
-
         return cell
     }
     
@@ -91,5 +106,10 @@ extension ListView : UITableViewDelegate, UITableViewDataSource {
         header.collectionView.reloadData()
         return header
     }
-
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let rowTapped = self.rowTapped {
+            rowTapped(String(movieArray[indexPath.row].id))
+        }
+    }
 }

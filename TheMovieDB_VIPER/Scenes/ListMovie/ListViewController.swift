@@ -16,8 +16,6 @@ protocol ListViewControllerInterface: class {
 class ListViewController: UIViewController {
     var presenter: ListPresenterInterface?
     private let listView: ListView = ListView()
-    private let listMovieHeaderView: ListMovieHeaderView = ListMovieHeaderView()
-    private let listMovieHeaderCell: ListMovieHeaderCell = ListMovieHeaderCell()
 
     
     override func viewDidAppear(_ animated: Bool) {
@@ -25,12 +23,29 @@ class ListViewController: UIViewController {
         presenter?.viewDidAppear()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = listView
         hideKeyboardWhenTappedAround()
+        goToDetailsPage()
     }
     
+    func goToDetailsPage(){
+        listView.rowTapped = {[weak self] movieID in
+            guard self != nil else {return}
+            let vc = MovieDetailRouter.setupModule()
+            vc.movieID = movieID
+            let backItem = UIBarButtonItem()
+            backItem.title = ""
+            backItem.tintColor = .black
+            self?.navigationItem.backBarButtonItem = backItem
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
 }
 
 extension ListViewController: ListViewControllerInterface {

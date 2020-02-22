@@ -22,6 +22,7 @@ class NetworkManager {
     }()
 
     func request<T: Codable>(_ request: URLRequestConvertible, decodeToType type: T.Type, completionHandler: @escaping (Results<T>) -> ()) {
+        print(request.urlRequest?.url! ?? "")
         AF.request(request).responseData { response in
             switch response.result {
             case .success(let data):

@@ -11,6 +11,7 @@ import UIKit
 class ListMovieHeaderView: UITableViewHeaderFooterView {
     let cellId = "cellId"
     var nowPlayingMovieArray = [NowPlayingResult]()
+    
     var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -40,9 +41,6 @@ class ListMovieHeaderView: UITableViewHeaderFooterView {
         setupConstraints()
         setupAdditionalConfiguration()
         self.backgroundColor = .white
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(ListMovieHeaderCell.self, forCellWithReuseIdentifier: cellId)
     }
     
     required init?(coder: NSCoder) {
@@ -65,7 +63,9 @@ extension ListMovieHeaderView : SetupView {
     }
     
     func setupAdditionalConfiguration() {
-        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(ListMovieHeaderCell.self, forCellWithReuseIdentifier: cellId)
     }
 }
 
@@ -91,7 +91,7 @@ extension ListMovieHeaderView: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 33, left: 0, bottom: 33, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -103,6 +103,10 @@ extension ListMovieHeaderView: UICollectionViewDelegate, UICollectionViewDataSou
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         if let visibleIndexPath = self.collectionView.indexPathForItem(at: visiblePoint) {
             self.pageControl.currentPage = visibleIndexPath.row
+            if visibleIndexPath.row == 6 {
+                self.collectionView.contentOffset.x = 0
+                self.pageControl.currentPage = 0
+            }
         }
     }
 }

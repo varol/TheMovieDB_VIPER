@@ -10,10 +10,10 @@ import UIKit
 
 class ListMovieCell: UITableViewCell {
     private let cellId = "cellId"
-
+    var movieID = [Int]()
     lazy var movieImage : UIImageView = {
         let iv = UIImageView()
-        iv.contentMode = .scaleToFill
+        iv.contentMode = .scaleAspectFill
         iv.layer.cornerRadius = 8
         iv.layer.masksToBounds = true
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -23,14 +23,14 @@ class ListMovieCell: UITableViewCell {
     lazy var headerLabel:UILabel = {
         let label = UILabel()
         label.textColor = Constants.Colors.mainTextColor
-        label.text = "Marriage Story (2019)"
         label.font = Constants.Fonts.headerFont
+        label.numberOfLines = 1
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
     lazy var shortDescriptionLabel:UILabel = {
         let label = UILabel()
-        label.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         label.numberOfLines = 2
         label.lineBreakMode = .byClipping
         label.textColor = Constants.Colors.descriptionTextColor
@@ -41,7 +41,6 @@ class ListMovieCell: UITableViewCell {
     lazy var dateLabel:UILabel = {
         let label = UILabel()
         label.textColor = Constants.Colors.descriptionTextColor
-        label.text = "12.12.12"
         label.font = Constants.Fonts.dateFont
         return label
     }()
@@ -50,7 +49,8 @@ class ListMovieCell: UITableViewCell {
         headerLabel.text = movieItem.title
         shortDescriptionLabel.text = movieItem.overview
         dateLabel.text = movieItem.releaseDate
-        guard let resource = URL(string: "https://image.tmdb.org/t/p/w500/" + movieItem.backdropPath) else {return}
+        movieID.append(movieItem.id)
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + movieItem.backdropPath) else {return}
         let placeholder = UIImage(named: "header")
         self.movieImage.kf.setImage(with: resource, placeholder: placeholder)
     }

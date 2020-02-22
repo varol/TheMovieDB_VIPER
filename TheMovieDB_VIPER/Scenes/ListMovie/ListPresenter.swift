@@ -10,7 +10,6 @@ import Foundation
 
 protocol ListPresenterInterface: class {
     func viewDidAppear()
-    func viewDidLoad()
     func getUpcomingMovies() -> [UpcomingMovies]?
     func getNowPlayingMovies() -> [NowPlayingMovies]?
 
@@ -42,11 +41,15 @@ class ListPresenter {
 }
 
 extension ListPresenter: ListPresenterInterface, MovieListInteractorOutputProtocol {
+    
     func getNowPlayingMovies() -> [NowPlayingMovies]? {
         return nowPlayingMovies
-
     }
     
+    func getUpcomingMovies() -> [UpcomingMovies]? {
+        return upcomingMovies
+    }
+
     func nowPlayingMoviesFetchedSuccessfully(movies: NowPlayingMovies) {
         self.nowPlayingMovies.append(movies)
         view.loadNowPlayingMovies()
@@ -57,10 +60,6 @@ extension ListPresenter: ListPresenterInterface, MovieListInteractorOutputProtoc
     }
     
     
-    func getUpcomingMovies() -> [UpcomingMovies]? {
-        return upcomingMovies
-    }
-    
     func upcomingMoviesFetchedSuccessfully(movies: UpcomingMovies) {
         self.upcomingMovies.append(movies)
         view.loadUpcomingMovies()
@@ -70,18 +69,15 @@ extension ListPresenter: ListPresenterInterface, MovieListInteractorOutputProtoc
         print(error.localizedDescription)
     }
     
-    func viewDidLoad() {
-
-    }
-    
     func viewDidAppear() {
         DispatchQueue.main.async {
             self.interactor?.fetchUpcomingMovies()
             self.interactor?.fetchNowPlayingMovies()
         }
-
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+            self.interactor?.searchMovies(query: "the lord")
+        })
     }
-    
-
 }
 

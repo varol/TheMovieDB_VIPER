@@ -21,6 +21,8 @@ class ListMovieHeaderCell: UICollectionViewCell {
         let label = UILabel()
         label.textColor = Constants.Colors.headerTextColor
         label.font = Constants.Fonts.headerFont
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.textDropShadow()
         return label
     }()
@@ -36,7 +38,7 @@ class ListMovieHeaderCell: UICollectionViewCell {
     }
     
     func headerCellConfigure(movieItem: NowPlayingResult){
-        guard let resource = URL(string: "https://image.tmdb.org/t/p/w500/" + movieItem.backdropPath) else {return}
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + movieItem.backdropPath) else {return}
         let placeholder = UIImage(named: "header")
         self.headerImage.kf.setImage(with: resource, placeholder: placeholder)
         self.headerLabel.text = movieItem.title

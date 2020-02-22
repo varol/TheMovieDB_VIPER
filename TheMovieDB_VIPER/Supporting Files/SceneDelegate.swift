@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         window?.windowScene = windowScene
-        let vc = ListViewController()
+        let vc = ListRouter.setupModule()
         window!.rootViewController = vc
     }
 

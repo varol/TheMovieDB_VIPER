@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+
 class ListMovieHeaderCell: UICollectionViewCell {
     
     lazy var headerImage : UIImageView = {
@@ -38,7 +39,7 @@ class ListMovieHeaderCell: UICollectionViewCell {
     }
     
     func headerCellConfigure(movieItem: NowPlayingResult){
-        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + (movieItem.backdropPath ?? Constants.BaseURL.noImage)) else {return}
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + (movieItem.backdropPath ?? movieItem.posterPath)) else {return}
         let placeholder = UIImage(named: "header")
         self.headerImage.kf.setImage(with: resource, placeholder: placeholder)
         self.headerLabel.text = movieItem.title
@@ -60,7 +61,5 @@ extension ListMovieHeaderCell : SetupView {
     func setupAdditionalConfiguration() {
         
     }
-    
-    
 }
 

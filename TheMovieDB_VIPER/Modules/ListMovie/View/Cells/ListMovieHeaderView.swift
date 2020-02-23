@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ListMovieHeaderView: UITableViewHeaderFooterView {
+class ListMovieHeaderView: UITableViewCell {
     let cellId = "cellId"
     var nowPlayingMovieArray = [NowPlayingResult]()
     
@@ -18,6 +18,7 @@ class ListMovieHeaderView: UITableViewHeaderFooterView {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.isPagingEnabled = true
+        cv.showsHorizontalScrollIndicator = false
         cv.backgroundColor = .clear
         return cv
     }()
@@ -35,12 +36,10 @@ class ListMovieHeaderView: UITableViewHeaderFooterView {
     }()
 
     
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        buildViewHierarchy()
-        setupConstraints()
-        setupAdditionalConfiguration()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: cellId)
         self.backgroundColor = .white
+        setupView()
     }
     
     required init?(coder: NSCoder) {

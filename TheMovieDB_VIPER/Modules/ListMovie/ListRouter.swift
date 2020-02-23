@@ -9,14 +9,15 @@
 import Foundation
 import UIKit
 
-protocol ListRouterInterface: class {
-
+protocol ListRouterInterface {
+    func navigateToDetailWith(movieID: String)
 }
 
-class ListRouter: NSObject {
+final class ListRouter: NSObject {
 
     weak var presenter: ListPresenterInterface?
-
+    private weak var viewController: ListViewController?
+    
     static func setupModule() -> ListViewController {
         let vc = ListViewController()
         let interactor = ListInteractor()
@@ -25,12 +26,17 @@ class ListRouter: NSObject {
 
         vc.presenter = presenter
         router.presenter = presenter
-        interactor.presenter = presenter
+        interactor.output = presenter
+        router.viewController = vc
         return vc
     }
 }
 
 extension ListRouter: ListRouterInterface {
-
+    func navigateToDetailWith(movieID: String) {
+        let vc = MovieDetailRouter.setupModule()
+        vc.movieID = movieID
+        viewController?.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 

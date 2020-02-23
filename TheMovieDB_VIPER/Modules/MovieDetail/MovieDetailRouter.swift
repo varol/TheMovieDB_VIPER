@@ -13,7 +13,7 @@ protocol MovieDetailRouterInterface: class {
 
 }
 
-class MovieDetailRouter: NSObject {
+final class MovieDetailRouter: NSObject {
 
     weak var presenter: MovieDetailPresenterInterface?
 
@@ -25,7 +25,7 @@ class MovieDetailRouter: NSObject {
 
         vc.presenter = presenter
         router.presenter = presenter
-        interactor.presenter = presenter
+        interactor.output = presenter
         return vc
     }
 }

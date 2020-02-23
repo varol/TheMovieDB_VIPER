@@ -9,6 +9,7 @@
 import UIKit
 
 class ListView: UIView {
+    
     var movieArray = [UpcomingResult]()
     var nowPlayingMovieArray = [NowPlayingResult]()
     var searchMovieArray = [SearchResult]()
@@ -37,7 +38,7 @@ class ListView: UIView {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.allowsMultipleSelection = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
         return tableView
     }()
 
@@ -46,6 +47,7 @@ class ListView: UIView {
         let view = UIView()
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -80,37 +82,28 @@ extension ListView : SetupView, UISearchBarDelegate, UISearchDisplayDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ListMovieCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(ListMovieHeaderView.self, forCellReuseIdentifier: headerId)
         searchBar.delegate = self
 
         searchTableView.delegate = self
         searchTableView.dataSource = self
         searchTableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: cellId)
-
+        
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let movieString = (searchBar.text?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))!
-        let nc = NotificationCenter.default
         if (searchBar.text?.components(separatedBy: " ").count)! > 2 {
             self.searchView.isHidden = false
-
             if let searchMovies = self.searchMovies {
                 searchMovies(String(movieString))
-                nc.post(name: Notification.Name("startSearch"), object: nil)
                 DispatchQueue.main.async {
                     self.searchTableView.reloadData()
                 }
             }
-
         } else {
             self.searchView.isHidden = true
-            self.searchMovieArray.removeAll(keepingCapacity: true)
         }
-    }
-    
-
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print("searchText \(String(describing: searchBar.text))")
     }
 }
 
@@ -122,7 +115,6 @@ extension ListView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == self.tableView {
             let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? ListMovieCell ?? ListMovieCell(style: .default, reuseIdentifier: cellId)
-            
             cell.accessoryType = .disclosureIndicator
             cell.configure(movieItem: movieArray[indexPath.row])
             return cell
@@ -146,15 +138,22 @@ extension ListView : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerId) as? ListMovieHeaderView ?? ListMovieHeaderView(reuseIdentifier: headerId)
-        header.nowPlayingMovieArray = self.nowPlayingMovieArray
-        header.collectionView.reloadData()
+        let header = tableView.dequeueReusableCell(withIdentifier: headerId) as? ListMovieHeaderView
+        header?.nowPlayingMovieArray = self.nowPlayingMovieArray
+        header?.collectionView.reloadData()
         return header
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let rowTapped = self.rowTapped {
-            rowTapped(String(movieArray[indexPath.row].id))
+        if tableView == self.tableView {
+            if let rowTapped = self.rowTapped {
+                rowTapped(String(movieArray[indexPath.row].id))
+            }
+        } else {
+            if let rowTapped = self.rowTapped {
+                rowTapped(String(searchMovieArray[indexPath.row].id))
+            }
+
         }
     }
 }

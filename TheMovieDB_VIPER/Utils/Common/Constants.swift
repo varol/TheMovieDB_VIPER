@@ -34,13 +34,13 @@ struct Constants {
     struct BaseURL {
         static let baseURL: String = "https://api.themoviedb.org/3/movie/"
         static let imageBaseURL : String = "https://image.tmdb.org/t/p/w500/"
-        static let noImage : String = "/xQdN7MpyqDHLa1Qf6CC7aZnMfBR.jpg"
+        static let noImage : String = ""
         static let apiKey : String = "e7452b02e4e38ec328090154c68c43a7"
         static let nowPlayingURL: String = "https://api.themoviedb.org/3/movie/now_playing?api_key=" + apiKey + "&language=en-US&page=1"
         static let upcomingURL: String = "https://api.themoviedb.org/3/movie/upcoming?api_key=" + apiKey + "&language=en-US&page=1"
         static let searchURL: String = "https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&language=en-US&page=1&include_adult=false&query="
 
-        static let detailString: String = "?api_key=e7452b02e4e38ec328090154c68c43a7&language=en-US"
+        static let detailString: String = "?api_key=" + apiKey + "&language=en-US"
 
 
     }

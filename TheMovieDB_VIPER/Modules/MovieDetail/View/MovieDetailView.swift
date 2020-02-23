@@ -14,12 +14,6 @@ class MovieDetailView: UIView {
     var imdbID = ""
     var rowTapped : ((String) -> Void)? = nil
 
-    let stackView: UIScrollView = {
-        let stack = UIScrollView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
     lazy var movieImage : UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
@@ -31,7 +25,7 @@ class MovieDetailView: UIView {
 
     lazy var headerLabel:UILabel = {
         let label = UILabel()
-        label.numberOfLines = 1
+        label.numberOfLines = 2
         label.lineBreakMode = .byWordWrapping
         label.text = "The Lord Of The Rings The Lord Of The Rings"
         label.textColor = Constants.Colors.mainTextColor
@@ -39,13 +33,12 @@ class MovieDetailView: UIView {
         return label
     }()
     
-    lazy var descriptionLabel:UILabel = {
-        let label = UILabel()
-        label.text = ""
-        label.numberOfLines = 0
-        label.textColor = Constants.Colors.descriptionTextColor
-        label.font = Constants.Fonts.defaultFont
-        return label
+    lazy var descriptionText:UITextView = {
+        let textView = UITextView()
+        textView.isSelectable = false
+        textView.textColor = Constants.Colors.descriptionTextColor
+        textView.font = Constants.Fonts.defaultFont
+        return textView
     }()
 
     lazy var dateLabel:UILabel = {
@@ -76,7 +69,7 @@ class MovieDetailView: UIView {
         layout.scrollDirection = .horizontal
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.backgroundColor = .white
+        cv.backgroundColor = .clear
         cv.isPagingEnabled = true
         return cv
     }()
@@ -106,24 +99,20 @@ class MovieDetailView: UIView {
 
 extension MovieDetailView: SetupView {
     func buildViewHierarchy() {
-        self.addSubview(stackView)
 
-        self.addSubviews(movieImage, headerLabel, descriptionLabel, dateLabel, imdbButton, ratingLabel, collectionView, ratingImage)
+        self.addSubviews(movieImage, headerLabel, descriptionText, dateLabel, imdbButton, ratingLabel, collectionView, ratingImage)
     }
     
     func setupConstraints() {
         let safeArea = self.safeAreaLayoutGuide
 
+        movieImage.anchor(top: safeArea.topAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 240))
         
-        stackView.anchor(top: safeArea.topAnchor, leading: safeArea.leadingAnchor, bottom: safeArea.bottomAnchor, trailing: safeArea.trailingAnchor)
+        headerLabel.anchor(top: movieImage.bottomAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 10, left: 20, bottom: 0, right: 20))
         
-        movieImage.anchor(top: safeArea.topAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: 0, height: 250))
+        descriptionText.anchor(top: headerLabel.bottomAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 20, left: 20, bottom: 0, right: 20))
         
-        headerLabel.anchor(top: movieImage.bottomAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 20, left: 20, bottom: 0, right: 20))
-        
-        descriptionLabel.anchor(top: headerLabel.bottomAnchor, leading: safeArea.leadingAnchor, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 20, left: 20, bottom: 0, right: 20))
-        
-        imdbButton.anchor(top: descriptionLabel.bottomAnchor, leading: nil, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 20, left: 0, bottom: 0, right: 20),size: .init(width: 50, height: 25))
+        imdbButton.anchor(top: descriptionText.bottomAnchor, leading: nil, bottom: nil, trailing: safeArea.trailingAnchor, padding: .init(top: 20, left: 0, bottom: 0, right: 20),size: .init(width: 50, height: 25))
         
         dateLabel.anchor(top: nil, leading: nil, bottom: nil, trailing: imdbButton.leadingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 20))
         dateLabel.centerYAnchor.constraint(equalTo: imdbButton.centerYAnchor).isActive = true
@@ -133,16 +122,14 @@ extension MovieDetailView: SetupView {
         
         ratingImage.anchor(top: nil, leading: nil, bottom: nil, trailing: ratingLabel.leadingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 5), size: .init(width: 15, height: 15))
         ratingImage.centerYAnchor.constraint(equalTo: imdbButton.centerYAnchor).isActive = true
-
         
-        collectionView.anchor(top: imdbButton.bottomAnchor, leading: safeArea.leadingAnchor, bottom: safeArea.bottomAnchor, trailing: safeArea.trailingAnchor, padding: .init(top: 40, left: 0, bottom: 20, right: 0),size: .init(width: 0, height: 150))
+        collectionView.anchor(top: imdbButton.bottomAnchor, leading: safeArea.leadingAnchor, bottom: safeArea.bottomAnchor, trailing: safeArea.trailingAnchor, padding: .init(top: 10, left: 0, bottom: 20, right: 0),size: .init(width: 0, height: 150))
     }
     
     func setupAdditionalConfiguration() {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(SimilarMoviesCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-
     }
     
     
@@ -168,9 +155,7 @@ extension MovieDetailView: UICollectionViewDelegate, UICollectionViewDataSource,
         if let rowTapped = self.rowTapped {
             rowTapped(String(similarMoviesArray[indexPath.row].id))
         }
-
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 150, height: 150)

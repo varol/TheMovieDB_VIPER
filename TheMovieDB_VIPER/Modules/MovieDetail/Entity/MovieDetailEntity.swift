@@ -10,35 +10,24 @@ import Foundation
 
 // MARK: - MovieDetails
 struct MovieDetails: Codable {
-    let adult: Bool
     let backdropPath: String?
-    let budget: Int
-    let genres: [Genre]
-    let homepage: String?
     let id: Int
-    let imdbID, originalLanguage, originalTitle, overview: String
-    let popularity: Double
+    let imdbID: String
+    let overview: String
     let posterPath: String
     let releaseDate: String
-    let revenue, runtime: Int
-    let spokenLanguages: [SpokenLanguage]
-    let status, tagline, title: String
+    let title: String
     let video: Bool
     let voteAverage, voteCount: Double
 
     enum CodingKeys: String, CodingKey {
-        case adult
         case backdropPath = "backdrop_path"
-        case budget, genres, homepage, id
+        case id
         case imdbID = "imdb_id"
-        case originalLanguage = "original_language"
-        case originalTitle = "original_title"
-        case overview, popularity
+        case overview
         case posterPath = "poster_path"
         case releaseDate = "release_date"
-        case revenue, runtime
-        case spokenLanguages = "spoken_languages"
-        case status, tagline, title, video
+        case title, video
         case voteAverage = "vote_average"
         case voteCount = "vote_count"
     }

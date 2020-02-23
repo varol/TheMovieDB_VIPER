@@ -30,7 +30,7 @@ class SimilarMoviesCollectionViewCell: UICollectionViewCell {
 
     func configure(similarMovie: SimilarMoviesResult){
         titleLabel.text = similarMovie.title
-        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + similarMovie.posterPath ?? Constants.BaseURL.noImage) else {return}
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + (similarMovie.backdropPath  ?? similarMovie.posterPath)) else {return}
         let placeholder = UIImage(named: "header")
         self.headerImage.kf.setImage(with: resource, placeholder: placeholder)
     }
@@ -53,9 +53,9 @@ extension SimilarMoviesCollectionViewCell : SetupView {
     }
     
     func setupConstraints() {
-        headerImage.anchor(top: self.topAnchor, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 20, left: 20, bottom: 30, right: 20))
+        headerImage.anchor(top: self.topAnchor, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 15, left: 10, bottom: 40, right: 10))
         
-        titleLabel.anchor(top: headerImage.bottomAnchor, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 10, left: 20, bottom: 10, right: 20))
+        titleLabel.anchor(top: headerImage.bottomAnchor, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 10, left: 10, bottom: 0, right: 10))
     }
     
     func setupAdditionalConfiguration() {

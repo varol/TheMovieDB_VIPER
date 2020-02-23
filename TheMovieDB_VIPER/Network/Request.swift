@@ -8,10 +8,10 @@
 
 import Foundation
 
-class MovieListWorker {
+class Worker {
     
-    static let shared: MovieListWorker = {
-        let instance = MovieListWorker()
+    static let shared: Worker = {
+        let instance = Worker()
         return instance
     }()
 
@@ -34,6 +34,4 @@ class MovieListWorker {
     func similarMovies(movieId: String, completionHandler: @escaping (Results<SimilarMovies>) -> ()) {
         NetworkManager.shared.request(Router.similars(movieId: movieId), decodeToType: SimilarMovies.self, completionHandler: completionHandler)
     }
-
-
 }

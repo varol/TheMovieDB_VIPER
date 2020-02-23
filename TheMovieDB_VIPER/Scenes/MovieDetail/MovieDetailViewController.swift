@@ -18,9 +18,12 @@ class MovieDetailViewController: UIViewController {
     var presenter: MovieDetailPresenterInterface?
     private let detailView: MovieDetailView = MovieDetailView()
     var movieID = String()
-    
+    var dataFetched : ((MovieDetails) -> Void)? = nil
+
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.isNavigationBarHidden = false
+        newRequest()
+
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -66,7 +69,7 @@ extension MovieDetailViewController: MovieDetailViewControllerInterface {
             detailView.descriptionLabel.text = movieDetail.overview
             detailView.dateLabel.text = movieDetail.releaseDate
             detailView.ratingLabel.text = String(movieDetail.voteAverage)
-            guard let resource = URL(string: Constants.BaseURL.imageBaseURL + movieDetail.backdropPath) else {return}
+            guard let resource = URL(string: Constants.BaseURL.imageBaseURL + (movieDetail.backdropPath ?? Constants.BaseURL.noImage)) else {return}
             let placeholder = UIImage(named: "header")
             detailView.movieImage.kf.setImage(with: resource, placeholder: placeholder)
             detailView.imdbID = movieDetail.imdbID

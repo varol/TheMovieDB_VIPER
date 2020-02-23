@@ -18,7 +18,7 @@ class ListMovieHeaderView: UITableViewHeaderFooterView {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.isPagingEnabled = true
-        cv.backgroundColor = .white
+        cv.backgroundColor = .clear
         return cv
     }()
 

@@ -11,11 +11,14 @@ import UIKit
 protocol ListViewControllerInterface: class {
     func loadUpcomingMovies()
     func loadNowPlayingMovies()
+    func loadSearchingMovies()
 }
 
 class ListViewController: UIViewController {
     var presenter: ListPresenterInterface?
     private let listView: ListView = ListView()
+    private let searchView: SearchResultView = SearchResultView()
+    let nc = NotificationCenter.default
 
     
     override func viewDidAppear(_ animated: Bool) {
@@ -27,11 +30,25 @@ class ListViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        nc.removeObserver(self, name: NSNotification.Name(rawValue: "startSearch"), object: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = listView
         hideKeyboardWhenTappedAround()
         goToDetailsPage()
+        startSearch()
+        nc.addObserver(self, selector: #selector(startSearch), name: Notification.Name("startSearch"), object: nil)
+    }
+    
+    @objc func startSearch(){
+        print("start çalıştı")
+        listView.searchMovies = {[weak self] movieKeyword in
+            self?.presenter?.searchingMovies(query: movieKeyword)
+        }
+
     }
     
     func goToDetailsPage(){
@@ -41,7 +58,7 @@ class ListViewController: UIViewController {
             vc.movieID = movieID
             let backItem = UIBarButtonItem()
             backItem.title = ""
-            backItem.tintColor = .black
+            backItem.tintColor = Constants.Colors.backItemColor
             self?.navigationItem.backBarButtonItem = backItem
             self?.navigationController?.pushViewController(vc, animated: true)
         }
@@ -49,6 +66,16 @@ class ListViewController: UIViewController {
 }
 
 extension ListViewController: ListViewControllerInterface {
+    func loadSearchingMovies() {
+        if let searchMovieData = self.presenter?.getSearchingData(){
+            print("search yes!")
+            self.listView.searchMovieArray = searchMovieData.first!.results
+            DispatchQueue.main.async {
+                self.listView.searchTableView.reloadData()
+            }
+        }
+    }
+    
     func loadNowPlayingMovies() {
         if let movieItems = self.presenter?.getNowPlayingMovies(){
             self.listView.nowPlayingMovieArray = movieItems.first!.results

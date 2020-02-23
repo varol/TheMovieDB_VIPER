@@ -12,7 +12,8 @@ protocol ListPresenterInterface: class {
     func viewDidAppear()
     func getUpcomingMovies() -> [UpcomingMovies]?
     func getNowPlayingMovies() -> [NowPlayingMovies]?
-
+    func getSearchingData() -> [SearchMovies]?
+    func searchingMovies(query: String)
 }
 
 protocol MovieListInteractorOutputProtocol: class {
@@ -20,7 +21,8 @@ protocol MovieListInteractorOutputProtocol: class {
     func upcomingMoviesFetchingFailed(withError error: Error)
     func nowPlayingMoviesFetchedSuccessfully(movies: NowPlayingMovies)
     func nowPlayingMoviesFetchingFailed(withError error: Error)
-
+    func searchingMoviesFetchedSuccessfully(movies: SearchMovies)
+    func searchingMoviesFetchingFailed(withError error: Error)
 }
 
 class ListPresenter {
@@ -31,6 +33,7 @@ class ListPresenter {
     
     var upcomingMovies = [UpcomingMovies]()
     var nowPlayingMovies = [NowPlayingMovies]()
+    var searchingMovieData = [SearchMovies]()
 
     init(interactor: ListInteractorInterface, router: ListRouterInterface, view: ListViewControllerInterface) {
         self.view = view
@@ -41,6 +44,27 @@ class ListPresenter {
 }
 
 extension ListPresenter: ListPresenterInterface, MovieListInteractorOutputProtocol {
+    
+    func searchingMoviesFetchedSuccessfully(movies: SearchMovies) {
+        self.searchingMovieData.append(movies)
+        view.loadSearchingMovies()
+    }
+    
+    func searchingMoviesFetchingFailed(withError error: Error) {
+        print(error.localizedDescription)
+
+    }
+    
+    func getSearchingData() -> [SearchMovies]? {
+        return searchingMovieData
+    }
+    
+    
+    func searchingMovies(query: String) {
+        DispatchQueue.main.async {
+            self.interactor?.fetchSearchMovies(query: query)
+        }
+    }
     
     func getNowPlayingMovies() -> [NowPlayingMovies]? {
         return nowPlayingMovies
@@ -74,10 +98,6 @@ extension ListPresenter: ListPresenterInterface, MovieListInteractorOutputProtoc
             self.interactor?.fetchUpcomingMovies()
             self.interactor?.fetchNowPlayingMovies()
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-            self.interactor?.searchMovies(query: "the lord")
-        })
     }
 }
 

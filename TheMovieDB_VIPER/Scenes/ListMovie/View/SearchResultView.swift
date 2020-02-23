@@ -10,7 +10,8 @@ import UIKit
 
 class SearchResultView: UIView {
     fileprivate let cellId = "cellId"
-    var searchArray = ["Varol","AKSOY"]
+    var searchMovieArray = [SearchResult]()
+
     lazy var tableView : UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.allowsMultipleSelection = false
@@ -48,14 +49,16 @@ extension SearchResultView : SetupView {
 
 extension SearchResultView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchArray.count
+        return searchMovieArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? SearchResultTableViewCell ?? SearchResultTableViewCell(style: .default, reuseIdentifier: cellId)
         cell.accessoryType = .disclosureIndicator
-        cell.movieLabel.text = searchArray[indexPath.row]
-//        cell.configure(movieItem: searchArray[indexPath.row])
+        cell.movieLabel.text = searchMovieArray[indexPath.row].title
+        let resource = URL(string: Constants.BaseURL.imageBaseURL + (searchMovieArray[indexPath.row].backdropPath ?? Constants.BaseURL.noImage))
+        let placeholder = UIImage(named: "header")
+        cell.movieImage.kf.setImage(with: resource, placeholder: placeholder)
         return cell
     }
     

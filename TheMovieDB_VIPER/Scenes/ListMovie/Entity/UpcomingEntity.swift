@@ -35,7 +35,7 @@ struct UpcomingResult: Codable {
     let posterPath: String
     let id: Int
     let adult: Bool
-    let backdropPath: String
+    let backdropPath: String?
     let originalLanguage: UpcomingOriginalLanguage
     let originalTitle: String
     let genreIDS: [Int]

@@ -50,7 +50,7 @@ class ListMovieCell: UITableViewCell {
         shortDescriptionLabel.text = movieItem.overview
         dateLabel.text = movieItem.releaseDate
         movieID.append(movieItem.id)
-        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + movieItem.backdropPath) else {return}
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + (movieItem.backdropPath ?? Constants.BaseURL.noImage)) else {return}
         let placeholder = UIImage(named: "header")
         self.movieImage.kf.setImage(with: resource, placeholder: placeholder)
     }

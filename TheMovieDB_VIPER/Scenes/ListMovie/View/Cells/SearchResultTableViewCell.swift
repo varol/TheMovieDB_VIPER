@@ -29,14 +29,6 @@ class SearchResultTableViewCell: UITableViewCell {
     }()
 
 
-    func configure(movieItem: UpcomingResult){
-        movieLabel.text = movieItem.title
-        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + movieItem.backdropPath) else {return}
-        let placeholder = UIImage(named: "header")
-        self.movieImage.kf.setImage(with: resource, placeholder: placeholder)
-    }
-
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: cellId)
         setupView()

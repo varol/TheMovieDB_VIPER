@@ -11,7 +11,7 @@ import Foundation
 protocol ListInteractorInterface: class {
     func fetchUpcomingMovies()
     func fetchNowPlayingMovies()
-    func searchMovies(query: String)
+    func fetchSearchMovies(query: String)
 }
 
 class ListInteractor {
@@ -19,14 +19,15 @@ class ListInteractor {
 }
 
 extension ListInteractor: ListInteractorInterface {
-    func searchMovies(query: String) {
+    func fetchSearchMovies(query: String) {
         MovieListWorker.shared.searchMovies(query: query) { [weak self] result in
             guard self != nil else { return }
                 switch result {
                 case .success(let movies):
-                    print(movies)
+                    self?.presenter?.searchingMoviesFetchedSuccessfully(movies: movies)
                 case .failure(let error):
-                    debugPrint(error)
+                    self?.presenter?.searchingMoviesFetchingFailed(withError: error)
+                    debugPrint("search",error)
             }
         }
 
@@ -39,6 +40,8 @@ extension ListInteractor: ListInteractorInterface {
             case .success(let movies):
                 self?.presenter?.nowPlayingMoviesFetchedSuccessfully(movies: movies)
             case .failure(let error):
+                debugPrint("now",error)
+
                 self?.presenter?.nowPlayingMoviesFetchingFailed(withError: error)
             }
         }
@@ -52,6 +55,8 @@ extension ListInteractor: ListInteractorInterface {
             case .success(let movies):
                 self?.presenter?.upcomingMoviesFetchedSuccessfully(movies: movies)
             case .failure(let error):
+                debugPrint("upcom",error)
+
                 self?.presenter?.upcomingMoviesFetchingFailed(withError: error)
             }
         }

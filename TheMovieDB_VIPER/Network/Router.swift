@@ -28,7 +28,6 @@ enum Router: URLRequestConvertible {
             return .get
         case .similars:
             return .get
-
         }
     }
     
@@ -57,7 +56,8 @@ enum Router: URLRequestConvertible {
             let url = URL(string: Constants.BaseURL.upcomingURL)!
             return url
         case .search(let query):
-            let url = URL(string: Constants.BaseURL.upcomingURL)!
+            let queryString = Constants.BaseURL.searchURL + query
+            let url = URL(string: queryString)!
             return url
         case .details(let movieId):
             let queryString = Constants.BaseURL.baseURL + movieId + Constants.BaseURL.detailString

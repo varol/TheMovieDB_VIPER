@@ -17,13 +17,12 @@ class MovieDetailView: UIView {
     let stackView: UIScrollView = {
         let stack = UIScrollView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.backgroundColor = .white
         return stack
     }()
     
     lazy var movieImage : UIImageView = {
         let iv = UIImageView()
-        iv.contentMode = .scaleToFill
+        iv.contentMode = .scaleAspectFit
         iv.layer.masksToBounds = true
         iv.image = UIImage(named: "header")
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -77,8 +76,8 @@ class MovieDetailView: UIView {
         layout.scrollDirection = .horizontal
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.isPagingEnabled = true
         cv.backgroundColor = .white
+        cv.isPagingEnabled = true
         return cv
     }()
 
@@ -99,9 +98,6 @@ class MovieDetailView: UIView {
         super.init(frame: frame)
         self.backgroundColor = .white
         setupView()
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(SimilarMoviesCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
     }
     
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented")}
@@ -143,7 +139,10 @@ extension MovieDetailView: SetupView {
     }
     
     func setupAdditionalConfiguration() {
-        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(SimilarMoviesCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+
     }
     
     

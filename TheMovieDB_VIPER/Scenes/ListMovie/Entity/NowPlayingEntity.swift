@@ -36,8 +36,8 @@ struct NowPlayingResult: Codable {
     let posterPath: String
     let id: Int
     let adult: Bool
-    let backdropPath: String
-    let originalLanguage: NowPlayingOriginalLanguage
+    let backdropPath: String?
+    let originalLanguage: NowPlayingOriginalLanguage?
     let originalTitle: String
     let genreIDS: [Int]
     let title: String

@@ -30,7 +30,7 @@ class SimilarMoviesCollectionViewCell: UICollectionViewCell {
 
     func configure(similarMovie: SimilarMoviesResult){
         titleLabel.text = similarMovie.title
-        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + similarMovie.posterPath) else {return}
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + similarMovie.posterPath ?? Constants.BaseURL.noImage) else {return}
         let placeholder = UIImage(named: "header")
         self.headerImage.kf.setImage(with: resource, placeholder: placeholder)
     }

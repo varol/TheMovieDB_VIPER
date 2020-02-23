@@ -11,10 +11,10 @@ import Foundation
 // MARK: - MovieDetails
 struct MovieDetails: Codable {
     let adult: Bool
-    let backdropPath: String
+    let backdropPath: String?
     let budget: Int
     let genres: [Genre]
-    let homepage: String
+    let homepage: String?
     let id: Int
     let imdbID, originalLanguage, originalTitle, overview: String
     let popularity: Double

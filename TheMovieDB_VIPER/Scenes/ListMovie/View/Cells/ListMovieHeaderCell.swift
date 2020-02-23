@@ -38,7 +38,7 @@ class ListMovieHeaderCell: UICollectionViewCell {
     }
     
     func headerCellConfigure(movieItem: NowPlayingResult){
-        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + movieItem.backdropPath) else {return}
+        guard let resource = URL(string: Constants.BaseURL.imageBaseURL + (movieItem.backdropPath ?? Constants.BaseURL.noImage)) else {return}
         let placeholder = UIImage(named: "header")
         self.headerImage.kf.setImage(with: resource, placeholder: placeholder)
         self.headerLabel.text = movieItem.title
